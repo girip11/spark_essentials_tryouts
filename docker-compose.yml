@@ -1,14 +1,17 @@
-version: '2'
+version: '3.7'
+
+volumes:
+  spark-pg-data:
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:10-alpine
     container_name: postgres
     environment:
-      - "TZ=Europe/Amsterdam"
       - "POSTGRES_USER=docker"
       - "POSTGRES_PASSWORD=docker"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - "./sql:/docker-entrypoint-initdb.d"
+      - spark-pg-data:/var/lib/postgresql/data
