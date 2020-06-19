@@ -90,10 +90,12 @@ object DataSources extends App {
     )
   )
 
+  // Documentation of format of various date styles are present here
+  // https://docs.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html
   val stocksDF = spark.read
     .format("csv")
     .schema(stocksSchema)
-    .option("dateFormat", "MMM dd YYYY")
+    .option("dateFormat", "MMM d yyyy")
     .option("header", true) // ignores first row in the file which is the column names
     .option("sep", ",") // can be other separator like tab
     .option("nullValue", "") // parse empty data/cell to null
