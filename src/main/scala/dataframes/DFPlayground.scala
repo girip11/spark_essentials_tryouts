@@ -2,6 +2,7 @@ package dataframes
 
 import org.apache.spark.sql.SparkSession
 
+// References: https://spark.apache.org/docs/3.0.0/sql-programming-guide.html
 object DFPlayground extends App {
 
   val spark = SparkSession

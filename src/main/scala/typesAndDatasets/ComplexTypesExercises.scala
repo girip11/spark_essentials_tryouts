@@ -26,8 +26,10 @@ object ComplexTypesExercises extends App {
     .option("inferSchema", true)
     .json("src/main/resources/data/movies.json")
 
+  // Reference: https://spark.apache.org/docs/3.0.0/sql-ref-datetime-pattern.html
   val parsedDate: Column = coalesce(
-    to_date(col("Release_Date"), "MMMMM, yyyy"),
+    // Four letters of M looks for full name of the Month
+    to_date(col("Release_Date"), "MMMM, yyyy"),
     to_date(col("Release_Date"), "dd-MMM-yy"),
     to_date(col("Release_Date"), "yyyy-MM-dd"),
     to_date(col("Release_Date"), "d-MMM-yy")

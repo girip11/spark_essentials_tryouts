@@ -42,7 +42,7 @@ object ComplexTypes extends App {
   moviesDF
     .select(
       col("Title"),
-      struct(col("US_Gross"), col("Worldwide_Gross")).as("Profit")
+      struct(col("US_Gross"), col("Worldwide_Gross")).as("Profit"),
     )
     .select(
       col("Title"),
@@ -75,4 +75,29 @@ object ComplexTypes extends App {
       // of the value in the array. Position starts from 1 unlike index which starts from 0
     )
     .show
+
+  //4. Maps
+  //For map - syntax(Keytype, valuetype)
+  // key should not be nullable
+  // all key types should be same
+  // all value types should be same
+  moviesDF
+    .select(
+      map(lit("Movie"), col("Title"), lit("Release_Date"), col("Release_Date")).as(
+        "MapType")
+    )
+    .show
+
+  // using sql expression
+  moviesDF
+    .selectExpr(
+      "map('Movie', Title, 'Release_Date', Release_Date) as MapType"
+    )
+    .show
+
+  // list of date, timestamp, array and map functions
+  // https://spark.apache.org/docs/3.0.0/sql-ref-functions-builtin.html#array-functions
+  // https://spark.apache.org/docs/3.0.0/sql-ref-functions-builtin.html#map-functions
+  // https://spark.apache.org/docs/3.0.0/sql-ref-functions-builtin.html#date-and-timestamp-functions
+  // https://spark.apache.org/docs/3.0.0/sql-ref-functions-builtin.html#json-functions
 }
