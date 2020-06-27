@@ -1,11 +1,12 @@
 package part2dataframes
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{expr, max, col}
+import org.apache.spark.sql.functions.{col, expr, max}
 
 object Joins extends App {
 
-  val spark = SparkSession.builder()
+  val spark = SparkSession
+    .builder()
     .appName("Joins")
     .config("spark.master", "local")
     .getOrCreate()
@@ -42,7 +43,6 @@ object Joins extends App {
   // anti-joins = everything in the left DF for which there is NO row in the right DF satisfying the condition
   guitaristsDF.join(bandsDF, joinCondition, "left_anti")
 
-
   // things to bear in mind
   // guitaristsBandsDF.select("id", "band").show // this crashes
 
@@ -57,29 +57,32 @@ object Joins extends App {
   guitaristsDF.join(bandsModDF, guitaristsDF.col("band") === bandsModDF.col("bandId"))
 
   // using complex types
-  guitaristsDF.join(guitarsDF.withColumnRenamed("id", "guitarId"), expr("array_contains(guitars, guitarId)"))
+  guitaristsDF.join(
+    guitarsDF.withColumnRenamed("id", "guitarId"),
+    expr("array_contains(guitars, guitarId)"))
 
   /**
-    * Exercises
-    *
-    * 1. show all employees and their max salary
-    * 2. show all employees who were never managers
-    * 3. find the job titles of the best paid 10 employees in the company
-    */
+   * Exercises
+   *
+   * 1. show all employees and their max salary
+   * 2. show all employees who were never managers
+   * 3. find the job titles of the best paid 10 employees in the company
+   */
 
   val driver = "org.postgresql.Driver"
-  val url = "jdbc:postgresql://localhost:5432/rtjvm"
+  val url = "jdbc:postgresql://localhost:5433/rtjvm"
   val user = "docker"
   val password = "docker"
 
-  def readTable(tableName: String) = spark.read
-    .format("jdbc")
-    .option("driver", driver)
-    .option("url", url)
-    .option("user", user)
-    .option("password", password)
-    .option("dbtable", s"public.$tableName")
-    .load()
+  def readTable(tableName: String) =
+    spark.read
+      .format("jdbc")
+      .option("driver", driver)
+      .option("url", url)
+      .option("user", user)
+      .option("password", password)
+      .option("dbtable", s"public.$tableName")
+      .load()
 
   val employeesDF = readTable("employees")
   val salariesDF = readTable("salaries")
@@ -87,7 +90,8 @@ object Joins extends App {
   val titlesDF = readTable("titles")
 
   // 1
-  val maxSalariesPerEmpNoDF = salariesDF.groupBy("emp_no").agg(max("salary").as("maxSalary"))
+  val maxSalariesPerEmpNoDF =
+    salariesDF.groupBy("emp_no").agg(max("salary").as("maxSalary"))
   val employeesSalariesDF = employeesDF.join(maxSalariesPerEmpNoDF, "emp_no")
 
   // 2
@@ -104,4 +108,3 @@ object Joins extends App {
 
   bestPaidJobsDF.show()
 }
-

@@ -204,4 +204,5 @@ spark-warehouse/
 spark-cluster/apps/
 spark-cluster/data/
 
+output/
 # End of https://www.gitignore.io/api/sbt,scala,spark,intellij

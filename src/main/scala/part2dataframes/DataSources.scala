@@ -5,22 +5,24 @@ import org.apache.spark.sql.types._
 
 object DataSources extends App {
 
-  val spark = SparkSession.builder()
+  val spark = SparkSession
+    .builder()
     .appName("Data Sources and Formats")
     .config("spark.master", "local")
     .getOrCreate()
 
-  val carsSchema = StructType(Array(
-    StructField("Name", StringType),
-    StructField("Miles_per_Gallon", DoubleType),
-    StructField("Cylinders", LongType),
-    StructField("Displacement", DoubleType),
-    StructField("Horsepower", LongType),
-    StructField("Weight_in_lbs", LongType),
-    StructField("Acceleration", DoubleType),
-    StructField("Year", DateType),
-    StructField("Origin", StringType)
-  ))
+  val carsSchema = StructType(
+    Array(
+      StructField("Name", StringType),
+      StructField("Miles_per_Gallon", DoubleType),
+      StructField("Cylinders", LongType),
+      StructField("Displacement", DoubleType),
+      StructField("Horsepower", LongType),
+      StructField("Weight_in_lbs", LongType),
+      StructField("Acceleration", DoubleType),
+      StructField("Year", DateType),
+      StructField("Origin", StringType)
+    ))
 
   /*
     Reading a DF:
@@ -39,11 +41,12 @@ object DataSources extends App {
   // alternative reading with options map
   val carsDFWithOptionMap = spark.read
     .format("json")
-    .options(Map(
-      "mode" -> "failFast",
-      "path" -> "src/main/resources/data/cars.json",
-      "inferSchema" -> "true"
-    ))
+    .options(
+      Map(
+        "mode" -> "failFast",
+        "path" -> "src/main/resources/data/cars.json",
+        "inferSchema" -> "true"
+      ))
     .load()
 
   /*
@@ -52,7 +55,7 @@ object DataSources extends App {
    - save mode = overwrite, append, ignore, errorIfExists
    - path
    - zero or more options
-  */
+   */
   carsDF.write
     .format("json")
     .mode(SaveMode.Overwrite)
@@ -67,11 +70,12 @@ object DataSources extends App {
     .json("src/main/resources/data/cars.json")
 
   // CSV flags
-  val stocksSchema = StructType(Array(
-    StructField("symbol", StringType),
-    StructField("date", DateType),
-    StructField("price", DoubleType)
-  ))
+  val stocksSchema = StructType(
+    Array(
+      StructField("symbol", StringType),
+      StructField("date", DateType),
+      StructField("price", DoubleType)
+    ))
 
   spark.read
     .schema(stocksSchema)
@@ -105,11 +109,11 @@ object DataSources extends App {
     .load()
 
   /**
-    * Exercise: read the movies DF, then write it as
-    * - tab-separated values file
-    * - snappy Parquet
-    * - table "public.movies" in the Postgres DB
-    */
+   * Exercise: read the movies DF, then write it as
+   * - tab-separated values file
+   * - snappy Parquet
+   * - table "public.movies" in the Postgres DB
+   */
 
   val moviesDF = spark.read.json("src/main/resources/data/movies.json")
 
